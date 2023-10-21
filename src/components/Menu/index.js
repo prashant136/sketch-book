@@ -11,7 +11,17 @@ import { menuItemClick, actionItemClick } from "@/slice/menuSlice";
 
 export default function Menu() {
     const dispatch = useDispatch();
-    const activeMenuItem = useSelector((state) => state.menu.activeMenuItem);
+    const { activeMenuItem, actionMenuItem } = useSelector(
+        (state) => state.menu
+    );
+
+    const handleMenuItemClick = (item) => {
+        dispatch(menuItemClick(item));
+    };
+
+    const handleActionItemClick = (item) => {
+        dispatch(actionItemClick(item));
+    };
 
     return (
         <div className={styles.menuContainer}>
@@ -20,7 +30,7 @@ export default function Menu() {
                     [styles.hover]: activeMenuItem === MENU_ITEMS.PENCIL
                 })}
                 onClick={() => {
-                    dispatch(menuItemClick(MENU_ITEMS.PENCIL));
+                    handleMenuItemClick(MENU_ITEMS.PENCIL);
                 }}
             >
                 <HiPencil className={styles.icon} />
@@ -30,18 +40,33 @@ export default function Menu() {
                     [styles.hover]: activeMenuItem === MENU_ITEMS.ERASER
                 })}
                 onClick={() => {
-                    dispatch(menuItemClick(MENU_ITEMS.ERASER));
+                    handleMenuItemClick(MENU_ITEMS.ERASER);
                 }}
             >
                 <BsEraserFill className={styles.icon} />
             </div>
-            <div className={styles.iconWrapper}>
+            <div
+                className={styles.iconWrapper}
+                onClick={() => {
+                    handleActionItemClick(MENU_ITEMS.UNDO);
+                }}
+            >
                 <FiRotateCcw className={styles.icon} />
             </div>
-            <div className={styles.iconWrapper}>
+            <div
+                className={styles.iconWrapper}
+                onClick={() => {
+                    handleActionItemClick(MENU_ITEMS.REDO);
+                }}
+            >
                 <FiRotateCw className={styles.icon} />
             </div>
-            <div className={styles.iconWrapper}>
+            <div
+                className={styles.iconWrapper}
+                onClick={() => {
+                    handleActionItemClick(MENU_ITEMS.DOWNLOAD);
+                }}
+            >
                 <HiDocumentDownload className={styles.icon} />
             </div>
         </div>
