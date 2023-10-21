@@ -14,11 +14,11 @@ const initialState = {
     [MENU_ITEMS.REDO]: {},
     [MENU_ITEMS.DOWNLOAD]: {}
 };
-const menuSlice = createSlice({
+const toolboxSlice = createSlice({
     name: "toolbox",
     initialState,
     reducers: {
-        chnageColor: (state, action) => {
+        changeColor: (state, action) => {
             state[action.payload.item].color = action.payload.color;
         },
         changeBrushSize: (state, action) => {
@@ -26,5 +26,5 @@ const menuSlice = createSlice({
         }
     }
 });
-export const { menuItemClick, actionItemClick } = menuSlice.actions;
-export default menuSlice.reducer;
+export const { changeColor, changeBrushSize } = toolboxSlice.actions;
+export default toolboxSlice.reducer;
