@@ -6,21 +6,22 @@ import { changeColor, changeBrushSize } from "@/slice/toolboxSlice";
 
 export default function Toolbox() {
     const dispatch = useDispatch();
-    const menuSelector = useSelector((state) => state.menu);
+    const { activeMenuItem } = useSelector((state) => state.menu);
+    const toolboxSelector = useSelector((state) => state.toolbox);
 
-    const strokeColor = menuSelector.activeMenuItem === MENU_ITEMS.PENCIL;
-    const brushSize =
-        menuSelector.activeMenuItem === MENU_ITEMS.PENCIL || MENU_ITEMS.ERASER;
-    const activeItem = menuSelector.activeMenuItem;
+    const { color, size } = toolboxSelector[activeMenuItem];
+
+    const strokeColor = activeMenuItem === MENU_ITEMS.PENCIL;
+    const brushSize = activeMenuItem === MENU_ITEMS.PENCIL || MENU_ITEMS.ERASER;
 
     const updateBrushSize = (e) => {
-        console.log("updatebrushsize", e.target.value);
-        dispatch(changeBrushSize({ item: activeItem, size: e.target.value }));
+        dispatch(
+            changeBrushSize({ item: activeMenuItem, size: e.target.value })
+        );
     };
 
     const updateStokeColor = (value) => {
-        console.log("updateStokeColor", value);
-        dispatch(changeColor({ item: activeItem, color: value }));
+        dispatch(changeColor({ item: activeMenuItem, color: value }));
     };
 
     return (
@@ -71,6 +72,7 @@ export default function Toolbox() {
                             min={1}
                             max={10}
                             step={1}
+                            value={size}
                             onChange={updateBrushSize}
                         />
                     </div>
