@@ -9,6 +9,20 @@ export default function Board() {
     const canvasRef = useRef(null);
     const showDrawRef = useRef(null);
 
+    /***
+     *
+     * ✅ REDO and UNDO feature
+     *  👉 create and array and a pointer(historyPointer)
+     *  👉 historyPointer is  initially pointing to the last element of array
+     *  👉 for UNDO - historyPointer will move  -->  first elmenet of array
+     *  👉 for REDO - historyPointer will move -->  last elmenet of array
+     *
+     *  🚩 whenever mouseup event fires (user releases the mouse), store that snapshot into keepUndoRedoHistory variable.
+     *
+     */
+    const keepUndoRedoHistory = useRef([]); // story all the history of canvas img detail
+    const historyPointer = useRef(0); // index that will move over keepUndoRedoHistory array for undo and redo
+
     // picking different slices from redux store
     const { activeMenuItem, actionMenuItem } = useSelector(
         (state) => state.menu
@@ -35,6 +49,21 @@ export default function Board() {
             );
             anchor.download = titleWhileDownloding;
             anchor.click();
+        } else if (actionMenuItem === MENU_ITEMS.UNDO) {
+            if (historyPointer.current > 0) {
+                historyPointer.current -= 1; // historyPointer will go till Zeroth index
+            }
+            const imgData = keepUndoRedoHistory.current[historyPointer.current];
+            context.putImageData(imgData, 0, 0); // paints data from the given ImageData object onto the canvas.
+        } else if (actionMenuItem === MENU_ITEMS.REDO) {
+            if (
+                historyPointer.current <
+                keepUndoRedoHistory.current.length - 1
+            ) {
+                historyPointer.current += 1; // historyPointer will go till Last index
+            }
+            const imgData = keepUndoRedoHistory.current[historyPointer.current];
+            context.putImageData(imgData, 0, 0);
         }
         dispatch(actionItemClick(null));
     }, [actionMenuItem, dispatch]);
@@ -69,6 +98,15 @@ export default function Board() {
 
         const handleMouseUp = (e) => {
             showDrawRef.current = false;
+            // 👇 store this canvas detail to keepUndoRedoHistory for undo and redo.
+            const imgData = context.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            ); // detail of specified portion of the canvas
+            keepUndoRedoHistory.current.push(imgData); // store to keepUndoRedoHistory
+            historyPointer.current = keepUndoRedoHistory.current.length - 1; // pointing to the last index
         };
 
         canvas.addEventListener("mousedown", handleMouseDown);
